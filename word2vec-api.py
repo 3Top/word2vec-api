@@ -27,7 +27,7 @@ api = Api(app)
 def pageNotFound(error):
     return "page not found"
 
-@parser = reqparse.RequestParser()
+parser = reqparse.RequestParser()
 parser.add_argument('ws1', type=str, required=True, help="Word set 1 cannot be blank!", action='append')
 parser.add_argument('ws2', type=str, required=True, help="Word set 2 cannot be blank!", action='append')
 
