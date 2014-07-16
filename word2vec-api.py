@@ -14,12 +14,32 @@ from numpy import exp, dot, zeros, outer, random, dtype, get_include, float32 as
     uint32, seterr, array, uint8, vstack, argsort, fromstring, sqrt, newaxis, ndarray, empty, sum as np_sum
 import argparse
 
+parser = reqparse.RequestParser()
+
 
 class N_Similarity(Resource):
     def get(self):
+        parser.add_argument('ws1', type=str, required=True, help="Word set 1 cannot be blank!", action='append')
+        parser.add_argument('ws2', type=str, required=True, help="Word set 2 cannot be blank!", action='append')
         args = parser.parse_args()
-	print(parser.parse_args())
         return model.n_similarity(args['ws1'],args['ws2'])
+
+
+class Similarity(Resource):
+    def get(self):
+        parser.add_argument('positive', type=str, required=False, help="Positive words.", action='append')
+        parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
+        parser.add_argument('top_n', type=int, required=False, help="Number of results.")        
+        args = parser.parse_args()
+        return model.similarity(args['positive'],args['negative'],args['top_n'])
+
+
+class MostSimilar(Resource):
+    def get(self):
+        parser.add_argument('word', type=str, required=False, help="Word.")
+        args = parser.parse_args()
+        return model.most_similar(args['word'])
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -28,9 +48,9 @@ api = Api(app)
 def pageNotFound(error):
     return "page not found"
 
-parser = reqparse.RequestParser()
-parser.add_argument('ws1', type=str, required=True, help="Word set 1 cannot be blank!", action='append')
-parser.add_argument('ws2', type=str, required=True, help="Word set 2 cannot be blank!", action='append')
+@app.errorhandler(505)
+def raiseError(error):
+    return error
 
 api.add_resource(N_Similarity, '/word2vec/n_similarity')
 api.add_resource(Similarity, '/word2vec/similarity')
