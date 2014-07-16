@@ -12,8 +12,8 @@ from gensim.models.word2vec import Word2Vec as w
 from gensim import utils, matutils
 from numpy import exp, dot, zeros, outer, random, dtype, get_include, float32 as REAL,\
     uint32, seterr, array, uint8, vstack, argsort, fromstring, sqrt, newaxis, ndarray, empty, sum as np_sum
+import argparse
 
-model = w.load_word2vec_format('/var/data/GoogleNews-vectors-negative300.bin.gz',binary=True)
 
 class N_Similarity(Resource):
     def get(self):
@@ -30,4 +30,19 @@ parser.add_argument('ws2', type=str, required=True, help="Word set 2 cannot be b
 api.add_resource(N_Similarity, '/word2vec/n_similarity')
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000)
+    global model
+    
+    #----------- Parsing Arguments ---------------
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model", help="Path to the trained model (default: ./model.bin.gz)")
+    parser.add_argument("--host", help="Host name (default: localhost)")
+    parser.add_argument("--port", help="Port (default: 5000)")
+    args = parser.parse_args()
+    
+    model_path = args.model if args.model else "./model.bin.gz"
+    host = args.host if args.host else "localhost"
+    port = int(args.port) if args.port else 5000
+    model_path = args.model if args.model else 'model.bin.gz'
+    model = w.load_word2vec_format(model_path, binary=True)
+    app.run(host=host, port=port) 
+        
