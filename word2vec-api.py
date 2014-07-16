@@ -29,19 +29,23 @@ class N_Similarity(Resource):
 class Similarity(Resource):
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('positive', type=str, required=False, help="Positive words.", action='append')
-        parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
-        parser.add_argument('top_n', type=int, required=False, help="Number of results.")        
+        parser.add_argument('w1', type=str, required=True, help="Word 1 cannot be blank!")
+        parser.add_argument('w2', type=str, required=True, help="Word 2 cannot be blank!")
         args = parser.parse_args()
-        return model.similarity(args['positive'],args['negative'],args['top_n'])
+        return model.similarity(args['w1'], args['w2'])
 
 
 class MostSimilar(Resource):
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('word', type=str, required=False, help="Word.")
+        parser.add_argument('positive', type=str, required=False, help="Positive words.", action='append')
+        parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
+        parser.add_argument('top_n', type=int, required=False, help="Number of results.")        
         args = parser.parse_args()
-        return model.most_similar(args['word'])
+        positive = args['positive'] if args['positive'] else []
+        negative = args['negative'] if args['negative'] else []
+        top_n = args['top_n'] if args['top_n'] else []     
+        return model.most_similar(positive=positive,negative=negative,topn=topn)
 
 
 app = Flask(__name__)
