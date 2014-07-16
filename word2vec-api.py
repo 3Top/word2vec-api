@@ -18,6 +18,7 @@ import argparse
 class N_Similarity(Resource):
     def get(self):
         args = parser.parse_args()
+	print(parser.parse_args())
         return model.n_similarity(args['ws1'],args['ws2'])
 
 app = Flask(__name__)
@@ -31,22 +32,25 @@ parser = reqparse.RequestParser()
 parser.add_argument('ws1', type=str, required=True, help="Word set 1 cannot be blank!", action='append')
 parser.add_argument('ws2', type=str, required=True, help="Word set 2 cannot be blank!", action='append')
 
-api.add_resource(N_Similarity, '/word2vec/n_similarity/')
+api.add_resource(N_Similarity, '/word2vec/n_similarity')
+api.add_resource(Similarity, '/word2vec/similarity')
+api.add_resource(MostSimilar, '/word2vec/most_similar')
 
 if __name__ == '__main__':
     global model
     
     #----------- Parsing Arguments ---------------
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model", help="Path to the trained model (default: ./model.bin.gz)")
-    parser.add_argument("--host", help="Host name (default: localhost)")
-    parser.add_argument("--port", help="Port (default: 5000)")
-    args = parser.parse_args()
+    p = argparse.ArgumentParser()
+    p.add_argument("--model", help="Path to the trained model")
+    p.add_argument("--host", help="Host name (default: localhost)")
+    p.add_argument("--port", help="Port (default: 5000)")
+    args = p.parse_args()
     
     model_path = args.model if args.model else "./model.bin.gz"
     host = args.host if args.host else "localhost"
     port = int(args.port) if args.port else 5000
-    model_path = args.model if args.model else 'model.bin.gz'
+    if not args.model:
+	print "Usage: wor2vec-apy.py --model path/to/the/model [--host host --port 1234]"
     model = w.load_word2vec_format(model_path, binary=True)
     app.run(host=host, port=port) 
         
