@@ -19,6 +19,7 @@ parser = reqparse.RequestParser()
 
 class N_Similarity(Resource):
     def get(self):
+        parser = reqparse.RequestParser()
         parser.add_argument('ws1', type=str, required=True, help="Word set 1 cannot be blank!", action='append')
         parser.add_argument('ws2', type=str, required=True, help="Word set 2 cannot be blank!", action='append')
         args = parser.parse_args()
@@ -27,6 +28,7 @@ class N_Similarity(Resource):
 
 class Similarity(Resource):
     def get(self):
+        parser = reqparse.RequestParser()
         parser.add_argument('positive', type=str, required=False, help="Positive words.", action='append')
         parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
         parser.add_argument('top_n', type=int, required=False, help="Number of results.")        
@@ -36,6 +38,7 @@ class Similarity(Resource):
 
 class MostSimilar(Resource):
     def get(self):
+        parser = reqparse.RequestParser()
         parser.add_argument('word', type=str, required=False, help="Word.")
         args = parser.parse_args()
         return model.most_similar(args['word'])
@@ -48,7 +51,7 @@ api = Api(app)
 def pageNotFound(error):
     return "page not found"
 
-@app.errorhandler(505)
+@app.errorhandler(500)
 def raiseError(error):
     return error
 
