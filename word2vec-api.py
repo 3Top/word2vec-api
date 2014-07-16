@@ -23,11 +23,15 @@ class N_Similarity(Resource):
 app = Flask(__name__)
 api = Api(app)
 
-parser = reqparse.RequestParser()
+@app.errorhandler(404)
+def pageNotFound(error):
+    return "page not found"
+
+@parser = reqparse.RequestParser()
 parser.add_argument('ws1', type=str, required=True, help="Word set 1 cannot be blank!", action='append')
 parser.add_argument('ws2', type=str, required=True, help="Word set 2 cannot be blank!", action='append')
 
-api.add_resource(N_Similarity, '/word2vec/n_similarity')
+api.add_resource(N_Similarity, '/word2vec/n_similarity/')
 
 if __name__ == '__main__':
     global model
