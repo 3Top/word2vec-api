@@ -40,12 +40,18 @@ class MostSimilar(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('positive', type=str, required=False, help="Positive words.", action='append')
         parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
-        parser.add_argument('top_n', type=int, required=False, help="Number of results.")        
+        parser.add_argument('topn', type=int, required=False, help="Number of results.")        
         args = parser.parse_args()
-        positive = args['positive'] if args['positive'] else []
-        negative = args['negative'] if args['negative'] else []
-        top_n = args['top_n'] if args['top_n'] else []     
-        return model.most_similar(positive=positive,negative=negative,topn=topn)
+        pos = args.get('positive', [])
+        neg = args.get('negative', [])
+        t = args.get('topn', 10)
+        pos = [] if pos == None else pos
+        neg = [] if neg == None else neg
+        t = 10 if t == None else t
+        print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)  
+            
+        res = model.most_similar(positive=pos,negative=neg,topn=t)
+	return res
 
 
 app = Flask(__name__)
