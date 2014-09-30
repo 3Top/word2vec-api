@@ -40,16 +40,21 @@ class MostSimilar(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('positive', type=str, required=False, help="Positive words.", action='append')
         parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
-        parser.add_argument('top_n', type=int, required=False, help="Number of results.")        
+        parser.add_argument('topn', type=int, required=False, help="Number of results.")        
         args = parser.parse_args()
-        positive = args['positive'] if 'positive' in args else []
-        negative = args['negative'] if 'negative' in args else []
-        top_n = args['top_n'] if 'top_n' in args else 10
+        pos = args.get('positive', [])
+        neg = args.get('negative', [])
+        t = args.get('topn', 10)
+        pos = [] if pos == None else pos
+        neg = [] if neg == None else neg
+        t = 10 if t == None else t
+        print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)  
         try:    
-            res = model.most_similar(positive=positive,negative=negative,topn=top_n)
+            res = model.most_similar(positive=pos,negative=neg,topn=t)
             return res
         except:
             print res
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -60,7 +65,6 @@ def pageNotFound(error):
 
 @app.errorhandler(500)
 def raiseError(error):
-    print error
     return error
 
 api.add_resource(N_Similarity, '/word2vec/n_similarity')
