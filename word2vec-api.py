@@ -50,7 +50,7 @@ class MostSimilar(Resource):
         t = 10 if t == None else t
         print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)  
         try:    
-            res = model.most_similar(positive=pos,negative=neg,topn=t)
+            res = model.most_similar_cosmul(positive=pos,negative=neg,topn=t)
             return res
         except:
             print res
