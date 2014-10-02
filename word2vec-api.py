@@ -54,7 +54,17 @@ class MostSimilar(Resource):
             return res
         except:
             print res
-
+            
+class Model(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('word', type=str, required=True, help="word to query.")
+        args = parser.parse_args()
+        try:
+            res = model[args['word']]
+            return res
+        except:
+            return       
 
 app = Flask(__name__)
 api = Api(app)
@@ -70,6 +80,7 @@ def raiseError(error):
 api.add_resource(N_Similarity, '/word2vec/n_similarity')
 api.add_resource(Similarity, '/word2vec/similarity')
 api.add_resource(MostSimilar, '/word2vec/most_similar')
+api.add_resource(Model, '/word2vec/model')
 
 if __name__ == '__main__':
     global model
@@ -77,15 +88,17 @@ if __name__ == '__main__':
     #----------- Parsing Arguments ---------------
     p = argparse.ArgumentParser()
     p.add_argument("--model", help="Path to the trained model")
+    p.add_argument("--binary", help="Specifies the loaded model is binary")
     p.add_argument("--host", help="Host name (default: localhost)")
     p.add_argument("--port", help="Port (default: 5000)")
     args = p.parse_args()
     
     model_path = args.model if args.model else "./model.bin.gz"
+    binary = True if args.binary else False
     host = args.host if args.host else "localhost"
     port = int(args.port) if args.port else 5000
     if not args.model:
 	print "Usage: wor2vec-apy.py --model path/to/the/model [--host host --port 1234]"
-    model = w.load_word2vec_format(model_path, binary=True)
+    model = w.load_word2vec_format(model_path, binary=binary)
     app.run(host=host, port=port) 
         
