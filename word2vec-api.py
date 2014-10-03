@@ -51,7 +51,7 @@ class MostSimilar(Resource):
         print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)  
         try:    
             res = model.most_similar_cosmul(positive=pos,negative=neg,topn=t)
-            return res
+            return json.dumps(res)
         except:
             print res
             
