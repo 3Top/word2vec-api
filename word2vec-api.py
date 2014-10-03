@@ -51,7 +51,7 @@ class MostSimilar(Resource):
         print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)  
         try:    
             res = model.most_similar_cosmul(positive=pos,negative=neg,topn=t)
-            return json.dumps(res)
+            return res
         except:
             print res
             
@@ -62,7 +62,7 @@ class Model(Resource):
         args = parser.parse_args()
         try:
             res = model[args['word']]
-            return res
+            return json.dumps(res)
         except:
             return       
 
