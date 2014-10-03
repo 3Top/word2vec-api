@@ -62,7 +62,7 @@ class Model(Resource):
         args = parser.parse_args()
         try:
             res = model[args['word']]
-            return json.dumps(res)
+            return res.tostring()
         except:
             return       
 
