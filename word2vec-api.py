@@ -13,6 +13,8 @@ from gensim import utils, matutils
 from numpy import exp, dot, zeros, outer, random, dtype, get_include, float32 as REAL,\
     uint32, seterr, array, uint8, vstack, argsort, fromstring, sqrt, newaxis, ndarray, empty, sum as np_sum
 import argparse
+import base64
+import sys
 
 parser = reqparse.RequestParser()
 
@@ -62,9 +64,11 @@ class Model(Resource):
         args = parser.parse_args()
         try:
             res = model[args['word']]
-            return res.tostring()
+            str = base64.b64encode(res)
+            return str
         except:
-            return       
+            sys.exc_info()[0]
+            return
 
 app = Flask(__name__)
 api = Api(app)
@@ -100,5 +104,4 @@ if __name__ == '__main__':
     if not args.model:
 	print "Usage: wor2vec-apy.py --model path/to/the/model [--host host --port 1234]"
     model = w.load_word2vec_format(model_path, binary=binary)
-    app.run(host=host, port=port) 
-        
+    app.run(host=host, port=port)
