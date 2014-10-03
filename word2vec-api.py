@@ -64,10 +64,9 @@ class Model(Resource):
         args = parser.parse_args()
         try:
             res = model[args['word']]
-            str = base64.b64encode(res)
-            return str
+            res = base64.b64encode(res)
+            return res
         except:
-            sys.exc_info()[0]
             return
 
 app = Flask(__name__)
