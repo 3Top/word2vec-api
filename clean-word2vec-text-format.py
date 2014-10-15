@@ -2,7 +2,6 @@
 
 import codecs
 import os
-import gc
 import shutil
 
 SOURCE = 'glove.840B.300d.txt'
@@ -96,7 +95,5 @@ with codecs.open(TMP,mode='r',encoding='utf8') as tmp:
 tmp.close()
 target.close()
 os.remove(TMP)
-len(gc.get_objects())
-gc.collect()
 
 print("Done.")
