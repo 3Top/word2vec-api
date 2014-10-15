@@ -54,9 +54,11 @@ class MostSimilar(Resource):
         try:    
             res = model.most_similar_cosmul(positive=pos,negative=neg,topn=t)
             return res
-        except:
+        except Exception, e:
+            print e
             print res
-            
+
+
 class Model(Resource):
     def get(self):
         parser = reqparse.RequestParser()
@@ -66,7 +68,8 @@ class Model(Resource):
             res = model[args['word']]
             res = base64.b64encode(res)
             return res
-        except:
+        except Exception, e:
+            print e
             return
 
 app = Flask(__name__)
