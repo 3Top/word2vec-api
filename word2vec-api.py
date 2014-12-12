@@ -19,13 +19,17 @@ import sys
 parser = reqparse.RequestParser()
 
 
+def filter_words(words):
+    return [word for word in words if word in model.vocab]
+
+
 class N_Similarity(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('ws1', type=str, required=True, help="Word set 1 cannot be blank!", action='append')
         parser.add_argument('ws2', type=str, required=True, help="Word set 2 cannot be blank!", action='append')
         args = parser.parse_args()
-        return model.n_similarity(args['ws1'],args['ws2'])
+        return model.n_similarity(filter_words(args['ws1']),filter_words(args['ws2']))
 
 
 class Similarity(Resource):
@@ -44,8 +48,8 @@ class MostSimilar(Resource):
         parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
         parser.add_argument('topn', type=int, required=False, help="Number of results.")        
         args = parser.parse_args()
-        pos = args.get('positive', [])
-        neg = args.get('negative', [])
+        pos = filter_words(args.get('positive', []))
+        neg = filter_words(args.get('negative', []))
         t = args.get('topn', 10)
         pos = [] if pos == None else pos
         neg = [] if neg == None else neg
