@@ -108,6 +108,6 @@ if __name__ == '__main__':
     host = args.host if args.host else "localhost"
     port = int(args.port) if args.port else 5000
     if not args.model:
-	print "Usage: wor2vec-apy.py --model path/to/the/model [--host host --port 1234]"
+	print "Usage: word2vec-apy.py --model path/to/the/model [--host host --port 1234]"
     model = w.load_word2vec_format(model_path, binary=binary)
     app.run(host=host, port=port)
