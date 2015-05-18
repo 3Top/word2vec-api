@@ -11,7 +11,7 @@ from flask.ext.restful import Resource, Api, reqparse
 from gensim.models.word2vec import Word2Vec as w
 from gensim import utils, matutils
 from numpy import exp, dot, zeros, outer, random, dtype, get_include, float32 as REAL,\
-    uint32, seterr, array, uint8, vstack, argsort, fromstring, sqrt, newaxis, ndarray, empty, sum as np_sum
+     uint32, seterr, array, uint8, vstack, argsort, fromstring, sqrt, newaxis, ndarray, empty, sum as np_sum
 import argparse
 import base64
 import sys
@@ -20,7 +20,9 @@ parser = reqparse.RequestParser()
 
 
 def filter_words(words):
-    return [word for word in words if word in model.vocab]
+    if words is None:
+        return
+    return [word.lower() for word in words if word.lower() in model.vocab]
 
 
 class N_Similarity(Resource):
@@ -38,7 +40,7 @@ class Similarity(Resource):
         parser.add_argument('w1', type=str, required=True, help="Word 1 cannot be blank!")
         parser.add_argument('w2', type=str, required=True, help="Word 2 cannot be blank!")
         args = parser.parse_args()
-        return model.similarity(args['w1'], args['w2'])
+        return model.similarity(args['w1'].lower(), args['w2'].lower())
 
 
 class MostSimilar(Resource):
@@ -94,7 +96,7 @@ api.add_resource(Model, '/word2vec/model')
 
 if __name__ == '__main__':
     global model
-    
+
     #----------- Parsing Arguments ---------------
     p = argparse.ArgumentParser()
     p.add_argument("--model", help="Path to the trained model")
@@ -102,12 +104,12 @@ if __name__ == '__main__':
     p.add_argument("--host", help="Host name (default: localhost)")
     p.add_argument("--port", help="Port (default: 5000)")
     args = p.parse_args()
-    
+
     model_path = args.model if args.model else "./model.bin.gz"
     binary = True if args.binary else False
     host = args.host if args.host else "localhost"
     port = int(args.port) if args.port else 5000
     if not args.model:
-	print "Usage: word2vec-apy.py --model path/to/the/model [--host host --port 1234]"
+        print "Usage: word2vec-apy.py --model path/to/the/model [--host host --port 1234]"
     model = w.load_word2vec_format(model_path, binary=binary)
     app.run(host=host, port=port)
