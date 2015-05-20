@@ -22,7 +22,7 @@ parser = reqparse.RequestParser()
 def filter_words(words):
     if words is None:
         return
-    return [word.lower() for word in words if word.lower() in model.vocab]
+    return [word for word in words if word in model.vocab]
 
 
 class N_Similarity(Resource):
@@ -40,7 +40,7 @@ class Similarity(Resource):
         parser.add_argument('w1', type=str, required=True, help="Word 1 cannot be blank!")
         parser.add_argument('w2', type=str, required=True, help="Word 2 cannot be blank!")
         args = parser.parse_args()
-        return model.similarity(args['w1'].lower(), args['w2'].lower())
+        return model.similarity(args['w1'], args['w2'])
 
 
 class MostSimilar(Resource):
