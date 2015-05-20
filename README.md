@@ -18,7 +18,7 @@ curl http://127.0.0.1:5000/word2vec/model?word=restaurant
 
 Note: The "model" method returns a base64 encoding of the Word2Vec vector.
 
-## Where to get a pretrained models
+## Where to get a pretrained model
 
 In case you do not have domain specific data to train, it can be convenient to use a pretrained model. 
 Please feel free to submit additions to this list through a pull request.
