@@ -29,8 +29,8 @@ Please feel free to submit additions to this list through a pull request.
 | [Google News](GoogleNews-vectors-negative300.bin.gz) | 300 |Google News (100B) | 3M | Google | word2vec | negative sampling | BoW - ~5| [link](http://code.google.com/p/word2vec/) |
 | [Freebase IDs](https://docs.google.com/file/d/0B7XkCwpI5KDYaDBDQm1tZGNDRHc/edit?usp=sharing) | 1000 | Gooogle News (100B) | 1.4M | Google | word2vec, skip gram | ? | BoW - ~10 | [link](http://code.google.com/p/word2vec/) |
 | [Freebase names](https://docs.google.com/file/d/0B7XkCwpI5KDYeFdmcVltWkhtbmM/edit?usp=sharing) | 1000 | Gooogle News (100B) | 1.4M | Google | word2vec, skip gram | ? | BoW - ~10 | [link](http://code.google.com/p/word2vec/) |
-| [Wikipedia+Gigaword 5](http://www-nlp.stanford.edu/data/glove.6B.50d.txt.gz) | 50 | Wikipedia+Gigaword 5 (6B) | 400,000 | GloVe | GloVe | AdaGrad | 10+10 | [link](http://nlp.stanford.edu/projects/glove/0 |
-| [Wikipedia+Gigaword 5](http://www-nlp.stanford.edu/data/glove.6B.100d.txt.gz) | 100 | Wikipedia+Gigaword 5 (6B) | 400,000 | GloVe | GloVe | AdaGrad | 10+10 | [link](http://nlp.stanford.edu/projects/glove/ |
+| [Wikipedia+Gigaword 5](http://www-nlp.stanford.edu/data/glove.6B.50d.txt.gz) | 50 | Wikipedia+Gigaword 5 (6B) | 400,000 | GloVe | GloVe | AdaGrad | 10+10 | [link](http://nlp.stanford.edu/projects/glove/) |
+| [Wikipedia+Gigaword 5](http://www-nlp.stanford.edu/data/glove.6B.100d.txt.gz) | 100 | Wikipedia+Gigaword 5 (6B) | 400,000 | GloVe | GloVe | AdaGrad | 10+10 | [link](http://nlp.stanford.edu/projects/glove/) |
 | [Wikipedia+Gigaword 5](http://www-nlp.stanford.edu/data/glove.6B.200d.txt.gz) | 200 | Wikipedia+Gigaword 5 (6B) | 400,000 | GloVe | GloVe | AdaGrad | 10+10 | [link](http://nlp.stanford.edu/projects/glove/) |
 | [Wikipedia+Gigaword 5](http://www-nlp.stanford.edu/data/glove.6B.300d.txt.gz) | 300 | Wikipedia+Gigaword 5 (6B) | 400,000 | GloVe | GloVe | AdaGrad | 10+10 | [link](http://nlp.stanford.edu/projects/glove/) |
 | [Common Crawl 42B](http://www-nlp.stanford.edu/data/glove.42B.300d.txt.gz) | 300 | Common Crawl (42B) | ~2M | GloVe | GloVe | GloVe | AdaGrad | [link](http://nlp.stanford.edu/projects/glove/) |
