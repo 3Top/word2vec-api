@@ -1,6 +1,6 @@
 '''
 Simple web service wrapping a Word2Vec as implemented in Gensim
-Example call: curl http://127.0.0.1:5000/wor2vec/n_similarity/ws1=Sushi&ws1=Shop&ws2=Japanese&ws2=Restaurant
+Example call: curl http://127.0.0.1:5000/n_similarity/ws1=Sushi&ws1=Shop&ws2=Japanese&ws2=Restaurant
 @TODO: Add more methods
 @TODO: Add command line parameter: path to the trained model
 @TODO: Add command line parameters: host and port
@@ -16,6 +16,8 @@ import argparse
 import base64
 import sys
 
+import conf
+
 parser = reqparse.RequestParser()
 
 
@@ -25,7 +27,7 @@ def filter_words(words):
     return [word for word in words if word in model.vocab]
 
 
-class N_Similarity(Resource):
+class NSimilarity(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('ws1', type=str, required=True, help="Word set 1 cannot be blank!", action='append')
@@ -58,7 +60,7 @@ class MostSimilar(Resource):
         t = 10 if t == None else t
         print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)  
         try:    
-            res = model.most_similar_cosmul(positive=pos,negative=neg,topn=t)
+            res = model.most_similar_cosmul(positive=pos, negative=neg, topn=t)
             return res
         except Exception, e:
             print e
@@ -81,35 +83,22 @@ class Model(Resource):
 app = Flask(__name__)
 api = Api(app)
 
+
 @app.errorhandler(404)
-def pageNotFound(error):
+def pagenotfound(error):
     return "page not found"
+
 
 @app.errorhandler(500)
 def raiseError(error):
     return error
 
-api.add_resource(N_Similarity, '/word2vec/n_similarity')
-api.add_resource(Similarity, '/word2vec/similarity')
-api.add_resource(MostSimilar, '/word2vec/most_similar')
-api.add_resource(Model, '/word2vec/model')
+api.add_resource(NSimilarity, '/n_similarity')
+api.add_resource(Similarity, '/similarity')
+api.add_resource(MostSimilar, '/most_similar')
+api.add_resource(Model, '/model')
+
+model = w.load_word2vec_format(conf.model_path, binary=conf.binary)
 
 if __name__ == '__main__':
-    global model
-
-    #----------- Parsing Arguments ---------------
-    p = argparse.ArgumentParser()
-    p.add_argument("--model", help="Path to the trained model")
-    p.add_argument("--binary", help="Specifies the loaded model is binary")
-    p.add_argument("--host", help="Host name (default: localhost)")
-    p.add_argument("--port", help="Port (default: 5000)")
-    args = p.parse_args()
-
-    model_path = args.model if args.model else "./model.bin.gz"
-    binary = True if args.binary else False
-    host = args.host if args.host else "localhost"
-    port = int(args.port) if args.port else 5000
-    if not args.model:
-        print "Usage: word2vec-apy.py --model path/to/the/model [--host host --port 1234]"
-    model = w.load_word2vec_format(model_path, binary=binary)
-    app.run(host=host, port=port)
+    app.run(host=conf.host, port=conf.port)

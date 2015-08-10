@@ -1,8 +1,8 @@
 # yaml configuration file for UWSGI to run the word2vec-api under nginx & UWSGI
 
 uwsgi:
-  socket: 127.0.0.1:3031 
-  virtualenv: /srv/repos/word2vecapi/word2vec-api/~Envs/env1
+  socket: 127.0.0.1:3031
+  pythonpath: /srv/repos/word2vec-api
   master: 1
   chmod-socket: 666
   chown-sockt: nginx:nginx
@@ -11,7 +11,7 @@ uwsgi:
   workers: 3 
   pidfile: /tmp/uwsgi.pid
   daemonize: /var/log/uwsgi.log
-  module: word2vec-api
+  module: word2vecapi
   callable: app
   catch-exceptions: True
   enable-threads: True

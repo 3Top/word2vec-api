@@ -1,22 +1,43 @@
 word2vec-api
 ============
 
-Simple web service providing a word embedding API. The methods are based on Gensim Word2Vec implementation. Models are passed as parameters and must be in the Word2Vec text or binary format.
+Reworking of https://github.com/3Top/word2vec-api to add:
 
-* Launching the service
-```
-python word2vec-api --model path/to/the/model [--host host --port 1234]
-```
+* deployment via ssl on nginx / uwsgi
+* TODO: meaningful errors when a term is not available
+* TODO: Cleaned Output
 
-* Example calls
-```
-curl http://127.0.0.1:5000/word2vec/n_similarity?ws1=Sushi&ws1=Shop&ws2=Japanese&ws2=Restaurant
-curl http://127.0.0.1:5000/word2vec/similarity?w1=Sushi&w2=Japanese
-curl http://127.0.0.1:5000/word2vec/most_similar?positive=indian&positive=food[&negative=][&topn=]
-curl http://127.0.0.1:5000/word2vec/model?word=restaurant
-```
+Simple web service providing a word embedding API. 
+
+The methods are based on Gensim Word2Vec implementation. 
+
+Parameters are set in conf.py for ease of use with uwsgi
+
+---
+
+## Environment Setup and usage notes
+
+* This variant of word2vec-api was developed on an AWS Centos x64 6.5 instance using Pycharm 4.5.3
+* The main requirement was enough ram to load the Google News model, so an m3.xlarge (16Gb ram) instance was used.
+* A virtualenv with Python 2.7.9 was created, and populated with the provided requirements.txt.
+* Note that to get Scipy and Numpy working properly for gensim you may have to install yum packages as root, see the specific documentation for installing those packages for your OS.
+* To run this as non-root user, you may have to create and permission /var/log/uwsgi.log appropriately.
+* Each time you launch the script it will import the model specified in the conf file - it is significantly faster if you unzip it first.
+
+You can download the Google News Vectors as a test model using the following linux command:
+
+    wget https://www.googledrive.com/host/0B7XkCwpI5KDYNlNUTTlSS21pQmM -O GoogleNews-vectors-negative300.bin.gz
+
+### Example calls
+
+    curl http://127.0.0.1:5000/n_similarity?ws1=Sushi&ws1=Shop&ws2=Japanese&ws2=Restaurant
+    curl http://127.0.0.1:5000/similarity?w1=Sushi&w2=Japanese
+    curl http://127.0.0.1:5000/most_similar?positive=indian&positive=food[&negative=][&topn=]
+    curl http://127.0.0.1:5000/model?word=restaurant
 
 Note: The "model" method returns a base64 encoding of the Word2Vec vector.
+
+---
 
 ## Where to get a pretrained model
 
@@ -40,3 +61,6 @@ Please feel free to submit additions to this list through a pull request.
 | [Twitter (2B Tweets)](http://www-nlp.stanford.edu/data/glove.twitter.27B.200d.txt.gz) | 200 | Twitter (27B) | ? | GloVe | GloVe | GloVe | AdaGrad | [link](http://nlp.stanford.edu/projects/glove/) |
 | [Wikipedia dependency](http://u.cs.biu.ac.il/~yogo/data/syntemb/deps.words.bz2) | 300 | Wikipedia (?) | 174,015 | Levy \& Goldberg | word2vec modified | word2vec | syntactic dependencies | [link](https://levyomer.wordpress.com/2014/04/25/dependency-based-word-embeddings/) |
 | [DBPedia vectors](https://github.com/idio/wiki2vec/raw/master/torrents/enwiki-gensim-word2vec-1000-nostem-10cbow.torrent) | 1000 | Wikipedia (?) | ? | wiki2vec | word2vec | word2vec, skip-gram | BoW, 10 | [link](https://github.com/idio/wiki2vec#prebuilt-models) |
+
+
+
