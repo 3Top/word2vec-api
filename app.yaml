@@ -15,3 +15,4 @@ uwsgi:
   callable: app
   catch-exceptions: True
   enable-threads: True
+  touch-reload: word2vecapi.py

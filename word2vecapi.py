@@ -6,7 +6,7 @@ Example call: curl http://127.0.0.1:5000/n_similarity/ws1=Sushi&ws1=Shop&ws2=Jap
 @TODO: Add command line parameters: host and port
 '''
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask.ext.restful import Resource, Api, reqparse
 from gensim.models.word2vec import Word2Vec as w
 from gensim import utils, matutils
@@ -18,7 +18,7 @@ import sys
 
 import conf
 
-parser = reqparse.RequestParser()
+# parser = reqparse.RequestParser()
 
 
 def filter_words(words):
@@ -33,7 +33,7 @@ class NSimilarity(Resource):
         parser.add_argument('ws1', type=str, required=True, help="Word set 1 cannot be blank!", action='append')
         parser.add_argument('ws2', type=str, required=True, help="Word set 2 cannot be blank!", action='append')
         args = parser.parse_args()
-        return model.n_similarity(filter_words(args['ws1']),filter_words(args['ws2']))
+        return model.n_similarity(filter_words(args['ws1']), filter_words(args['ws2']))
 
 
 class Similarity(Resource):
@@ -55,16 +55,15 @@ class MostSimilar(Resource):
         pos = filter_words(args.get('positive', []))
         neg = filter_words(args.get('negative', []))
         t = args.get('topn', 10)
-        pos = [] if pos == None else pos
-        neg = [] if neg == None else neg
-        t = 10 if t == None else t
+        pos = [] if pos is None else pos
+        neg = [] if neg is None else neg
+        t = 10 if t is None else t
         print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)  
         try:    
             res = model.most_similar_cosmul(positive=pos, negative=neg, topn=t)
-            return res
-        except Exception, e:
-            print e
-            print res
+            return jsonify(res)
+        except Exception as e:
+            raise pagenotfound(e)
 
 
 class Model(Resource):
@@ -76,22 +75,22 @@ class Model(Resource):
             res = model[args['word']]
             res = base64.b64encode(res)
             return res
-        except Exception, e:
-            print e
-            return
+        except Exception as e:
+            raise pagenotfound(e)
 
 app = Flask(__name__)
 api = Api(app)
 
 
 @app.errorhandler(404)
-def pagenotfound(error):
-    return "page not found"
-
-
 @app.errorhandler(500)
-def raiseError(error):
-    return error
+def pagenotfound(error):
+    return "Requested query had no result", 500
+
+
+@app.route('/')
+def api_root():
+    return render_template('index.html')
 
 api.add_resource(NSimilarity, '/n_similarity')
 api.add_resource(Similarity, '/similarity')

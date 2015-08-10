@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Conception</title>
+</head>
+<body>
+<h1>Conception: A term-expansion service for news topics</h1>
+<h2>Example Calls</h2>
+<ul>
+    <li><b>https://conception.global-resonance.com/most_similar?positive=king&positive=woman&negative=man&topn=20</b></li>
+    <li>https://conception.global-resonance.com/n_similarity?ws1=Sushi&ws1=Shop&ws2=Japanese&ws2=Restaurant</li>
+    <li>https://conception.global-resonance.com/similarity?w1=Sushi&w2=Japanese</li>
+    <li>https://conception.global-resonance.com/model?word=restaurant</li>
+</ul>
+<br>
+<h2>Notes</h2>
+<ul>
+    <li>Requests for unrecognised terms will return a 500 Internal Server Error</li>
+    <li>Terms are drawn from Google's word2vec result set produced Sept2014</li>
+    <li>The 'model' call returns a base64 encoded version of the word</li>
+    <li>Code maintained at: <a href="https://github.com/Chaffleson/word2vec-api">https://github.com/Chaffleson/word2vec-api</a></li>
+</ul>
+</body>
+</html>
