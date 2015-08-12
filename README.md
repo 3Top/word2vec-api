@@ -34,6 +34,7 @@ You can download the Google News Vectors as a test model using the following lin
     curl http://127.0.0.1:3031/similarity?w1=Sushi&w2=Japanese
     curl http://127.0.0.1:3031/most_similar?positive=indian&positive=food[&negative=][&topn=]
     curl http://127.0.0.1:3031/model?word=restaurant
+    curl http://127.0.0.1:3031/search?q=shop
 
 Note: The "model" method returns a base64 encoding of the Word2Vec vector.
 

@@ -1,25 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Conception</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery.tokeninput.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='token-input.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='token-input-facebook.css') }}" type="text/css" />
+
+	<script type="text/javascript">
+		// Change these two!
+		var searchUrl = "https://conception.global-resonance.com/search"
+		var mostSimilarUrl = "https://conception.global-resonance.com/most_similar"
+		
+		// Set the "token Input"
+		$(document).ready(function() {
+			$(".search_button").click(findMostSimilar);
+		
+			$(".search_box").tokenInput(searchUrl, {
+                theme: "facebook",
+				searchDelay: 500,
+                minChars: 2,
+				resultsLimit: 100,
+                onResult: function (results) {
+					// the server doesn't return what tokenInput wants, which is an array of {"id":"856","name":"House"}
+					// so we convert it here
+                    results = $.map(results, function (value, index) {
+						return {"id": index, "name": value};
+                    });
+                    results.sort( function (a, b){
+                       return a.name.length - b.name.length;
+                    });
+                    return results;
+                },
+				onAdd: function (item) {
+					// Add the positive class, and make clicking them add the negative class
+					// This is horrible
+					var tokenElement = $(".search_box_container ul.token-input-list-facebook li.token-input-token-facebook").last();
+					tokenElement.addClass("positive");
+					tokenElement.click(toggleInfluence);
+                }
+            });
+		});
+		
+		function toggleInfluence() {
+			var $el = $(this);
+			if ($el.hasClass("positive")) {
+				$el.removeClass("positive").addClass("negative");
+			} else {
+				$el.removeClass("negative").addClass("positive");
+			}
+		}
+		
+		function findMostSimilar() {
+			// Manufacture the search URL in the most horrendous way possible
+			var tokens = $(".search_box_container").find("ul.token-input-list-facebook li.token-input-token-facebook");
+			var url = mostSimilarUrl + "?";
+			$.each(tokens, function(){
+				var $token = $(this);
+				var text = $token.find("p")[0].innerText;
+				var influence = ($token.hasClass("positive") ? "positive" : "negative");
+				url += influence + "=" + encodeURIComponent(text) + "&";
+			});
+			url += "topn=20";
+				
+			// Do the actual search
+			$.ajax({
+				url: url,
+				dataType: "json",
+				timeout: 10000,
+				success: function(data) {
+					// Show the results
+					var $resultsUL = $(".search_results");
+					$resultsUL.empty();
+					$.each(data, function(key, value) {
+					  $resultsUL.append("<li><b>" + key + "</b>: " + value + "</li>");
+					});
+				},
+				error: function() {
+					alert("Oops");
+				}
+			});
+		}
+	</script>
+	<style>
+		li.token-input-token-facebook.positive { background-color: #D3FBCC; border-color: #BEEAB1;}
+		li.token-input-token-facebook.negative { background-color: #FBCCCC; border: 1px solid #EAB1B1;}
+		li.token-input-token-facebook.token-input-selected-token-facebook.positive { background-color: #68A656; border-color: #57983B;}
+		li.token-input-token-facebook.token-input-selected-token-facebook.negative { background-color: #A65656; border: 1px solid #983B3B;}		
+	</style>
 </head>
 <body>
-<h1>Conception: A term-expansion service for news topics</h1>
-<h2>Example Calls</h2>
-<ul>
-    <li><b>https://conception.global-resonance.com/most_similar?positive=king&positive=woman&negative=man&topn=20</b></li>
-    <li>https://conception.global-resonance.com/n_similarity?ws1=Sushi&ws1=Shop&ws2=Japanese&ws2=Restaurant</li>
-    <li>https://conception.global-resonance.com/similarity?w1=Sushi&w2=Japanese</li>
-    <li>https://conception.global-resonance.com/model?word=restaurant</li>
-</ul>
-<br>
-<h2>Notes</h2>
-<ul>
-    <li>Requests for unrecognised terms will return a 500 Internal Server Error</li>
-    <li>Terms are drawn from Google's word2vec result set produced Sept2014</li>
-    <li>The 'model' call returns a base64 encoded version of the word</li>
-    <li>Code maintained at: <a href="https://github.com/Chaffleson/word2vec-api">https://github.com/Chaffleson/word2vec-api</a></li>
-</ul>
+	
+	<div class="search_box_container">
+		<input type="text" class="search_box" name="q" />
+		<input type="button" value="Search" class="search_button" />
+	</div>
+	
+	<ul class="search_results">
+	</ul>
+	
 </body>
 </html>

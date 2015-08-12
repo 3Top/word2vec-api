@@ -15,6 +15,7 @@ from numpy import exp, dot, zeros, outer, random, dtype, get_include, float32 as
 import argparse
 import base64
 import sys
+import re
 
 import conf
 
@@ -25,6 +26,28 @@ def filter_words(words):
     if words is None:
         return
     return [word for word in words if word in model.vocab]
+
+
+def dump_index(vocab):
+    """Clears all non alpha/underscore words from the vocab and writes it to a space delimited file."""
+    ok_words = re.compile('[^\w]')
+    index_list = []
+    for word in model.vocab:
+        if not ok_words.search(word):
+            index_list.append(word)
+    with open('./model_index.txt', 'wb') as index_file:
+        index_file.write(' '.join(index_list))
+
+
+class SearchTerms(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('q', type=str, required=True, help="Word or characters to search for")
+        args = parser.parse_args()
+        ss = args['q'].lower()
+        # res = [k for k in model.vocab if ss.lower() in k.lower()]
+        res = [value for (key, value) in vocab_index.iteritems() if ss in key]
+        return res
 
 
 class NSimilarity(Resource):
@@ -48,9 +71,9 @@ class Similarity(Resource):
 class MostSimilar(Resource):
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('positive', type=str, required=False, help="Positive words.", action='append')
-        parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
-        parser.add_argument('topn', type=int, required=False, help="Number of results.")        
+        parser.add_argument('positive', type=str, required=False, help="Positive words", action='append')
+        parser.add_argument('negative', type=str, required=False, help="Negative words", action='append')
+        parser.add_argument('topn', type=int, required=False, help="Number of results")
         args = parser.parse_args()
         pos = filter_words(args.get('positive', []))
         neg = filter_words(args.get('negative', []))
@@ -80,6 +103,7 @@ class Model(Resource):
 
 app = Flask(__name__)
 api = Api(app)
+# app.debug = True
 
 
 @app.errorhandler(404)
@@ -89,15 +113,26 @@ def pagenotfound(error):
 
 
 @app.route('/')
-def api_root():
+def search_root():
     return render_template('index.html')
+
+
+@app.route('/api')
+def api_docs():
+    return render_template('restapi.html')
 
 api.add_resource(NSimilarity, '/n_similarity')
 api.add_resource(Similarity, '/similarity')
 api.add_resource(MostSimilar, '/most_similar')
 api.add_resource(Model, '/model')
+api.add_resource(SearchTerms, '/search')
 
+# Import model for use
 model = w.load_word2vec_format(conf.model_path, binary=conf.binary)
+# precalculate lowercase index of terms in model for fast search
+vocab_index = {}
+for k in model.vocab:
+    vocab_index[k.lower()] = k
 
 if __name__ == '__main__':
     app.run(host=conf.host, port=conf.port)
