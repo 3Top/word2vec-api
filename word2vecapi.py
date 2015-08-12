@@ -84,6 +84,8 @@ class MostSimilar(Resource):
         print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)  
         try:    
             res = model.most_similar_cosmul(positive=pos, negative=neg, topn=t)
+            # Should sort the result from high to low number - http://stackoverflow.com/a/3121985/4717963
+            res.sort(key=lambda tup: tup[1], reverse=True)
             return jsonify(res)
         except Exception as e:
             raise pagenotfound(e)

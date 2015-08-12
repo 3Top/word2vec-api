@@ -7,12 +7,12 @@
 
 	<script type="text/javascript">
 		// Change these two!
-		var searchUrl = "https://conception.global-resonance.com/search"
-		var mostSimilarUrl = "https://conception.global-resonance.com/most_similar"
+		var searchUrl = "https://conception.global-resonance.com/search";
+		var mostSimilarUrl = "https://conception.global-resonance.com/most_similar";
 		
 		// Set the "token Input"
 		$(document).ready(function() {
-			$(".search_button").click(findMostSimilar);
+            $(".search_button").click(findMostSimilar);
 		
 			$(".search_box").tokenInput(searchUrl, {
                 theme: "facebook",
@@ -52,14 +52,15 @@
 		function findMostSimilar() {
 			// Manufacture the search URL in the most horrendous way possible
 			var tokens = $(".search_box_container").find("ul.token-input-list-facebook li.token-input-token-facebook");
-			var url = mostSimilarUrl + "?";
+			var topn = document.getElementsByName("topn")[0].value;
+            var url = mostSimilarUrl + "?";
 			$.each(tokens, function(){
 				var $token = $(this);
 				var text = $token.find("p")[0].innerText;
 				var influence = ($token.hasClass("positive") ? "positive" : "negative");
 				url += influence + "=" + encodeURIComponent(text) + "&";
 			});
-			url += "topn=20";
+			url += "topn=" + topn;
 				
 			// Do the actual search
 			$.ajax({
@@ -70,8 +71,9 @@
 					// Show the results
 					var $resultsUL = $(".search_results");
 					$resultsUL.empty();
-					$.each(data, function(key, value) {
-					  $resultsUL.append("<li><b>" + key + "</b>: " + value + "</li>");
+ 					$.each(data, function(key, value) {
+                        $this_value = value.toFixed(2);
+					  $resultsUL.append("<li><b>" + $this_value + "</b>: " + key + "</li>");
 					});
 				},
 				error: function() {
@@ -90,8 +92,13 @@
 <body>
 	
 	<div class="search_box_container">
-		<input type="text" class="search_box" name="q" />
-		<input type="button" value="Search" class="search_button" />
+        <label>
+            <input type="text" class="search_box" name="q"/>
+        </label>
+        <label>
+            <input type="number" name="topn" min="1" value="20"/>
+        </label>
+        <input type="button" value="Search" class="search_button" />
 	</div>
 	
 	<ul class="search_results">
