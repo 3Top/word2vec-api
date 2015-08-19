@@ -30,7 +30,7 @@ var DEFAULT_SETTINGS = {
 	// Tokenization settings
     tokenLimit: null,
     tokenDelimiter: ",",
-    preventDuplicates: true,
+    preventDuplicates: false,
 
 	// Output settings
     tokenValue: "id",

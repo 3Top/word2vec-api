@@ -45,9 +45,11 @@ class SearchTerms(Resource):
         parser.add_argument('q', type=str, required=True, help="Word or characters to search for")
         args = parser.parse_args()
         ss = args['q'].lower()
-        # res = [k for k in model.vocab if ss.lower() in k.lower()]
         res = [value for (key, value) in vocab_index.iteritems() if ss in key]
-        return res
+        # if there is more than 100 results for the search, sort for shortest and return the first 100
+        if len(res) > 100:
+            res.sort(key=len)
+        return res[:100]
 
 
 class NSimilarity(Resource):

@@ -1,9 +1,11 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='jquery.tokeninput.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='token-input.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='token-input-facebook.css') }}" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<script type="text/javascript">
 		// Change these two!
@@ -39,7 +41,7 @@
                 }
             });
 		});
-		
+
 		function toggleInfluence() {
 			var $el = $(this);
 			if ($el.hasClass("positive")) {
@@ -92,17 +94,13 @@
 <body>
 	
 	<div class="search_box_container">
-        <label>
-            <input type="text" class="search_box" name="q"/>
-        </label>
-        <label>
-            <input type="number" name="topn" min="1" value="20"/>
-        </label>
+        <label><b>Search for Terms:</b><input type="text" class="search_box" name="q"/></label>
+        <label>Max results (<100): <input type="number" name="topn" min="1" value="20" size="3"/></label>
         <input type="button" value="Search" class="search_button" />
 	</div>
-	
+
 	<ul class="search_results">
 	</ul>
-	
+
 </body>
 </html>
