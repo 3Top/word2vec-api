@@ -6,8 +6,10 @@ Example call: curl http://127.0.0.1:5000/n_similarity/ws1=Sushi&ws1=Shop&ws2=Jap
 @TODO: Add command line parameters: host and port
 '''
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, render_template, jsonify
 from flask.ext.restful import Resource, Api, reqparse
+# https://github.com/corydolphin/flask-jsonpify
+# from flask.ext.jsonpify import jsonify
 from gensim.models.word2vec import Word2Vec as w
 from gensim import utils, matutils
 from numpy import exp, dot, zeros, outer, random, dtype, get_include, float32 as REAL,\
@@ -107,7 +109,7 @@ class Model(Resource):
 
 app = Flask(__name__)
 api = Api(app)
-# app.debug = True
+app.debug = True
 
 
 @app.errorhandler(404)
