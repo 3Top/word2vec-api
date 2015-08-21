@@ -70,13 +70,24 @@
 				dataType: "json",
 				timeout: 10000,
 				success: function(data) {
+                    // sort the results
+                    var sortable = [];
+                    for (var keyword in data)
+                        sortable.push([keyword, data[keyword]]);
+                    sortable.sort(function(a, b) {
+                        return b[1] - a[1];
+                    });
 					// Show the results
 					var $resultsUL = $(".search_results");
 					$resultsUL.empty();
- 					$.each(data, function(key, value) {
-                        value = parseFloat(value.toFixed(2));
-					  $resultsUL.append("<li><b>" + value + "</b>: " + key + "</li>");
+ 					$.each(sortable, function(key, value) {
+                        // convert the sorted results into a nice readable format
+                        var term = value.toString().split(",")[0];
+                        var weight = value.toString().split(",")[1];
+                        weight = parseFloat(weight).toFixed(2);
+					  $resultsUL.append("<li><b>" + weight + "</b>: " + term + "</li>");
 					});
+                    $resultsUL.sort()
 				},
 				error: function() {
 					alert("Oops");
