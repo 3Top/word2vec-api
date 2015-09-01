@@ -109,7 +109,7 @@ class Model(Resource):
 
 app = Flask(__name__)
 api = Api(app)
-app.debug = True
+app.debug = False
 
 
 @app.errorhandler(404)

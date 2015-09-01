@@ -57,9 +57,11 @@
 			var topn = document.getElementsByName("topn")[0].value;
             var url = mostSimilarUrl + "?";
 			$.each(tokens, function(){
-				var $token = $(this);
-				var text = $token.find("p")[0].innerText;
-				var influence = ($token.hasClass("positive") ? "positive" : "negative");
+				var token = $(this);
+				var p = token.find("p")[0];
+                // Using innerHTML insetad of innerText due to Firefox incompatibility
+                var text = p.innerHTML
+				var influence = (token.hasClass("positive") ? "positive" : "negative");
 				url += influence + "=" + encodeURIComponent(text) + "&";
 			});
 			url += "topn=" + topn;
@@ -105,8 +107,8 @@
 <body>
 	
 	<div class="search_box_container">
-        <label><b>Search for Terms:</b><input type="text" class="search_box" name="q"/></label>
-        <label>Max results (<100): <input type="number" name="topn" min="1" value="20" size="3"/></label>
+        <label><b>Search for Terms:</b></label><input type="text" class="search_box" name="q"/>
+        <label>Max results (<100): </label><input type="number" name="topn" min="1" value="20" size="3"/>
         <input type="button" value="Search" class="search_button" />
 	</div>
 
