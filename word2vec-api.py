@@ -12,6 +12,7 @@ from gensim.models.word2vec import Word2Vec as w
 from gensim import utils, matutils
 from numpy import exp, dot, zeros, outer, random, dtype, get_include, float32 as REAL,\
      uint32, seterr, array, uint8, vstack, argsort, fromstring, sqrt, newaxis, ndarray, empty, sum as np_sum
+import cPickle
 import argparse
 import base64
 import sys
@@ -48,7 +49,7 @@ class MostSimilar(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('positive', type=str, required=False, help="Positive words.", action='append')
         parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
-        parser.add_argument('topn', type=int, required=False, help="Number of results.")        
+        parser.add_argument('topn', type=int, required=False, help="Number of results.")
         args = parser.parse_args()
         pos = filter_words(args.get('positive', []))
         neg = filter_words(args.get('negative', []))
@@ -56,8 +57,8 @@ class MostSimilar(Resource):
         pos = [] if pos == None else pos
         neg = [] if neg == None else neg
         t = 10 if t == None else t
-        print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)  
-        try:    
+        print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)
+        try:
             res = model.most_similar_cosmul(positive=pos,negative=neg,topn=t)
             return res
         except Exception, e:
@@ -78,6 +79,15 @@ class Model(Resource):
             print e
             return
 
+class ModelWordSet(Resource):
+    def get(self):
+        try:
+            res = base64.b64encode(cPickle.dumps(set(model.index2word)))
+            return res
+        except Exception, e:
+            print e
+            return
+
 app = Flask(__name__)
 api = Api(app)
 
@@ -93,6 +103,7 @@ api.add_resource(N_Similarity, '/word2vec/n_similarity')
 api.add_resource(Similarity, '/word2vec/similarity')
 api.add_resource(MostSimilar, '/word2vec/most_similar')
 api.add_resource(Model, '/word2vec/model')
+api.add_resource(ModelWordSet, '/word2vec/model_word_set')
 
 if __name__ == '__main__':
     global model
