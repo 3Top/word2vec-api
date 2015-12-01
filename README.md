@@ -14,9 +14,10 @@ curl http://127.0.0.1:5000/word2vec/n_similarity?ws1=Sushi&ws1=Shop&ws2=Japanese
 curl http://127.0.0.1:5000/word2vec/similarity?w1=Sushi&w2=Japanese
 curl http://127.0.0.1:5000/word2vec/most_similar?positive=indian&positive=food[&negative=][&topn=]
 curl http://127.0.0.1:5000/word2vec/model?word=restaurant
+curl http://127.0.0.1:5000/word2vec/model_word_set
 ```
 
-Note: The "model" method returns a base64 encoding of the vector.
+Note: The "model" method returns a base64 encoding of the vector. model\_word\_set returns a base64 encoded pickle of the model's vocabuary. 
 
 ## Where to get a pretrained model
 
