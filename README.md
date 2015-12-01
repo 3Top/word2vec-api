@@ -17,7 +17,7 @@ curl http://127.0.0.1:5000/word2vec/model?word=restaurant
 curl http://127.0.0.1:5000/word2vec/model_word_set
 ```
 
-Note: The "model" method returns a base64 encoding of the vector. model\_word\_set returns a base64 encoded pickle of the model's vocabuary. 
+Note: The "model" method returns a base64 encoding of the vector. "model\_word\_set" returns a base64 encoded pickle of the model's vocabulary. 
 
 ## Where to get a pretrained model
 
