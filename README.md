@@ -16,7 +16,7 @@ curl http://127.0.0.1:5000/word2vec/most_similar?positive=indian&positive=food[&
 curl http://127.0.0.1:5000/word2vec/model?word=restaurant
 ```
 
-Note: The "model" method returns a base64 encoding of the Word2Vec vector.
+Note: The "model" method returns a base64 encoding of the vector.
 
 ## Where to get a pretrained model
 
