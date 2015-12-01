@@ -99,12 +99,6 @@ def pageNotFound(error):
 def raiseError(error):
     return error
 
-api.add_resource(N_Similarity, '/word2vec/n_similarity')
-api.add_resource(Similarity, '/word2vec/similarity')
-api.add_resource(MostSimilar, '/word2vec/most_similar')
-api.add_resource(Model, '/word2vec/model')
-api.add_resource(ModelWordSet, '/word2vec/model_word_set')
-
 if __name__ == '__main__':
     global model
 
@@ -114,13 +108,20 @@ if __name__ == '__main__':
     p.add_argument("--binary", help="Specifies the loaded model is binary")
     p.add_argument("--host", help="Host name (default: localhost)")
     p.add_argument("--port", help="Port (default: 5000)")
+    p.add_argument("--path", help="Path (default: /word2vec)")
     args = p.parse_args()
 
     model_path = args.model if args.model else "./model.bin.gz"
     binary = True if args.binary else False
     host = args.host if args.host else "localhost"
+    path = args.path if args.path else "/word2vec"
     port = int(args.port) if args.port else 5000
     if not args.model:
         print "Usage: word2vec-apy.py --model path/to/the/model [--host host --port 1234]"
     model = w.load_word2vec_format(model_path, binary=binary)
+    api.add_resource(N_Similarity, path+'/n_similarity')
+    api.add_resource(Similarity, path+'/similarity')
+    api.add_resource(MostSimilar, path+'/most_similar')
+    api.add_resource(Model, path+'/model')
+    api.add_resource(ModelWordSet, '/word2vec/model_word_set')
     app.run(host=host, port=port)
