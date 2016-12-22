@@ -2,11 +2,21 @@ word2vec-api
 ============
 
 Simple web service providing a word embedding API. The methods are based on Gensim Word2Vec implementation. Models are passed as parameters and must be in the Word2Vec text or binary format.
+* Install Depenencies   
+```
+pip2 install -r requirements.txt
+```
 
 * Launching the service
 ```
 python word2vec-api --model path/to/the/model [--host host --port 1234]
 ```
+or   
+```
+python word2vec-api.py --model /path/to/GoogleNews-vectors-negative300.bin --binary BINARY --path /word2vec --host 0.0.0.0 --port 5000
+```
+
+
 
 * Example calls
 ```
