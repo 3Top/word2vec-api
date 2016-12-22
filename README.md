@@ -10,7 +10,11 @@ pip2 install -r requirements.txt
 * Launching the service
 ```
 python word2vec-api --model path/to/the/model [--host host --port 1234]
+or   
+python word2vec-api.py --model /path/to/GoogleNews-vectors-negative300.bin --binary BINARY --path /algorithm --host 0.0.0.0 --port 5000
 ```
+
+
 
 * Example calls
 ```
