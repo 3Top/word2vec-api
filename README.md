@@ -13,7 +13,7 @@ python word2vec-api --model path/to/the/model [--host host --port 1234]
 ```
 or   
 ```
-python word2vec-api.py --model /path/to/GoogleNews-vectors-negative300.bin --binary BINARY --path /algorithm --host 0.0.0.0 --port 5000
+python word2vec-api.py --model /path/to/GoogleNews-vectors-negative300.bin --binary BINARY --path /word2vec --host 0.0.0.0 --port 5000
 ```
 
 
