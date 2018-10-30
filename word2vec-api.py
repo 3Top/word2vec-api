@@ -5,14 +5,18 @@ Example call: curl http://127.0.0.1:5000/wor2vec/n_similarity/ws1=Sushi&ws1=Shop
 @TODO: Add command line parameter: path to the trained model
 @TODO: Add command line parameters: host and port
 '''
+from __future__ import print_function
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 from flask import Flask, request, jsonify
 from flask.ext.restful import Resource, Api, reqparse
 from gensim.models.word2vec import Word2Vec as w
 from gensim import utils, matutils
 from numpy import exp, dot, zeros, outer, random, dtype, get_include, float32 as REAL,\
      uint32, seterr, array, uint8, vstack, argsort, fromstring, sqrt, newaxis, ndarray, empty, sum as np_sum
-import cPickle
+import pickle
 import argparse
 import base64
 import sys
@@ -57,13 +61,13 @@ class MostSimilar(Resource):
         pos = [] if pos == None else pos
         neg = [] if neg == None else neg
         t = 10 if t == None else t
-        print "positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t)
+        print("positive: " + str(pos) + " negative: " + str(neg) + " topn: " + str(t))
         try:
             res = model.most_similar_cosmul(positive=pos,negative=neg,topn=t)
             return res
-        except Exception, e:
-            print e
-            print res
+        except Exception as e:
+            print(e)
+            print(res)
 
 
 class Model(Resource):
@@ -75,17 +79,17 @@ class Model(Resource):
             res = model[args['word']]
             res = base64.b64encode(res)
             return res
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             return
 
 class ModelWordSet(Resource):
     def get(self):
         try:
-            res = base64.b64encode(cPickle.dumps(set(model.index2word)))
+            res = base64.b64encode(pickle.dumps(set(model.index2word)))
             return res
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             return
 
 app = Flask(__name__)
@@ -117,7 +121,7 @@ if __name__ == '__main__':
     path = args.path if args.path else "/word2vec"
     port = int(args.port) if args.port else 5000
     if not args.model:
-        print "Usage: word2vec-apy.py --model path/to/the/model [--host host --port 1234]"
+        print("Usage: word2vec-apy.py --model path/to/the/model [--host host --port 1234]")
     model = w.load_word2vec_format(model_path, binary=binary)
     api.add_resource(N_Similarity, path+'/n_similarity')
     api.add_resource(Similarity, path+'/similarity')

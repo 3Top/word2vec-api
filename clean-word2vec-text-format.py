@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from __future__ import print_function
 import codecs
 import os
 import shutil
@@ -46,15 +47,15 @@ tmp = codecs.open(TMP,mode='w',encoding='utf8')
 line = source.readline()
 vsize, nbdim = line.split()
 vsize = int(vsize)
-print vsize
+print(vsize)
 count = 0
 bad = 0
 i = 0
 wrong_chars = [u'',u'\u00A0',u'\u2026',u'\u000A', u'\u000B', u'\u000C', u'\u000D', u'\u0085', u'\u2028', u'\u2029']
-print "Started ..."
+print("Started ...")
 while i<vsize:
     if i % 100000 == 0:
-        print i
+        print(i)
     i+=1
     s = u''
     c = u''
@@ -62,7 +63,7 @@ while i<vsize:
         c = read_utf8_char_and_decode(source)
         if c in wrong_chars:
             if c:
-	        print 'Error %s' % repr(c)
+	        print('Error %s' % repr(c))
             bad+=1
             source.readline()
             break
@@ -74,15 +75,15 @@ while i<vsize:
     try:
         s2 = s2.decode('utf8')
     except:
-        print "Error: %s" % s2
+        print("Error: %s" % s2)
         bad += 1
         continue
     count += 1
     tmp.write(s+s2)
 
-print "%d bad words" % bad
-print "%d total word count" % count
-print "Now copying to the target file..."
+print("%d bad words" % bad)
+print("%d total word count" % count)
+print("Now copying to the target file...")
 
 source.close()
 tmp.close()
