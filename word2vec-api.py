@@ -77,7 +77,7 @@ class Model(Resource):
         args = parser.parse_args()
         try:
             res = model[args['word']]
-            res = base64.b64encode(res)
+            res = base64.b64encode(res).decode()
             return res
         except Exception as e:
             print(e)
@@ -86,7 +86,7 @@ class Model(Resource):
 class ModelWordSet(Resource):
     def get(self):
         try:
-            res = base64.b64encode(pickle.dumps(set(model.index2word)))
+            res = base64.b64encode(pickle.dumps(set(model.index2word))).decode()
             return res
         except Exception as e:
             print(e)
