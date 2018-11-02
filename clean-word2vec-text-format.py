@@ -63,7 +63,7 @@ while i<vsize:
         c = read_utf8_char_and_decode(source)
         if c in wrong_chars:
             if c:
-	        print('Error %s' % repr(c))
+                print('Error %s' % repr(c))
             bad+=1
             source.readline()
             break

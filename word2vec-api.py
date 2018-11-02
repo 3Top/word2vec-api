@@ -50,6 +50,8 @@ class Similarity(Resource):
 
 class MostSimilar(Resource):
     def get(self):
+        if (norm == "disable"):
+            return "most_similar disabled", 400
         parser = reqparse.RequestParser()
         parser.add_argument('positive', type=str, required=False, help="Positive words.", action='append')
         parser.add_argument('negative', type=str, required=False, help="Negative words.", action='append')
@@ -105,6 +107,7 @@ def raiseError(error):
 
 if __name__ == '__main__':
     global model
+    global norm
 
     #----------- Parsing Arguments ---------------
     p = argparse.ArgumentParser()
@@ -113,6 +116,7 @@ if __name__ == '__main__':
     p.add_argument("--host", help="Host name (default: localhost)")
     p.add_argument("--port", help="Port (default: 5000)")
     p.add_argument("--path", help="Path (default: /word2vec)")
+    p.add_argument("--norm", help="How to normalize vectors. clobber: Replace loaded vectors with normalized versions. Saves a lot of memory if exact vectors aren't needed. both: Preserve the original vectors (double memory requirement). already: Treat model as already normalized. disable: Disable 'most_similar' queries and do not normalize vectors. (default: both)")
     args = p.parse_args()
 
     model_path = args.model if args.model else "./model.bin.gz"
@@ -122,8 +126,29 @@ if __name__ == '__main__':
     port = int(args.port) if args.port else 5000
     if not args.model:
         print("Usage: word2vec-apy.py --model path/to/the/model [--host host --port 1234]")
+
+    print("Loading model...")
     model = word2vec.KeyedVectors.load_word2vec_format(model_path, binary=binary)
-	
+
+    norm = args.norm if args.norm else "both"
+    norm = norm.lower()
+    if (norm in ["clobber", "replace"]):
+        norm = "clobber"
+        print("Normalizing (clobber)...")
+        model.init_sims(replace=True)
+    elif (norm == "already"):
+        model.wv.vectors_norm = model.wv.vectors  # prevent recalc of normed vectors (model.syn0norm = model.syn0)
+    elif (norm in ["disable", "disabled"]):
+        norm = "disable"
+    else:
+        norm = "both"
+        print("Normalizing...")
+        model.init_sims()
+    if (norm == "both"):
+        print("Model loaded.")
+    else:
+        print("Model loaded. (norm=",norm,")")
+
     api.add_resource(N_Similarity, path+'/n_similarity')
     api.add_resource(Similarity, path+'/similarity')
     api.add_resource(MostSimilar, path+'/most_similar')
